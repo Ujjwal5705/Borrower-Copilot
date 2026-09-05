@@ -143,7 +143,14 @@ export function foirCaps(answers, product) {
   let lenderWhy =
     "Standard lender FOIR cap for a salaried unsecured borrower is around 50% of net income.";
 
-  if (product.product === "home_loan" || product.product.includes("secured")) {
+  const SECURED_PRODUCTS = new Set([
+    "home_loan",
+    "loan_against_property_or_gold",
+    "vehicle_loan",
+    "business_loan_secured",
+  ]);
+
+  if (SECURED_PRODUCTS.has(product.product)) {
     lenderFOIR = 0.65;
     lenderWhy =
       "Secured products (home loan / LAP / vehicle) get a higher FOIR allowance, typically up to ~65%, because collateral backs the lender.";
