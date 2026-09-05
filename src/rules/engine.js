@@ -85,6 +85,7 @@ export function runEngine(answers) {
 
   return {
     ready: true,
+    answers,
     product,
     verdict,
     amountOutput,

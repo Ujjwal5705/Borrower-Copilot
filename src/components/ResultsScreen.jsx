@@ -1,4 +1,5 @@
 // src/components/ResultsScreen.jsx
+import NegotiationCard from "./NegotiationCard.jsx";
 
 const VERDICT_COPY = {
   BORROW: { label: "You can borrow this", tone: "good" },
@@ -138,6 +139,8 @@ export default function ResultsScreen({ result, onBack }) {
           </p>
         )}
       </section>
+
+      <NegotiationCard result={result} answers={result.answers} />
 
       <button className="secondary-btn" onClick={onBack}>
         ← Back to questions
