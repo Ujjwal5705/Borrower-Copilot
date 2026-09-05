@@ -2,6 +2,7 @@
 import { useAssistant } from "./hooks/useAssistant.js";
 import QuestionFlow from "./components/QuestionFlow.jsx";
 import { mustAnsweredCount, mustTotalCount } from "./rules/questions.js";
+import ResultsScreen from "./components/ResultsScreen.jsx";
 import "./App.css";
 
 export default function App() {
@@ -40,13 +41,8 @@ export default function App() {
           />
         )}
 
-        {phase === "results" && result && (
-          <div className="flow-screen">
-            <p>Results screen goes here (Step 15).</p>
-            <button className="secondary-btn" onClick={backToQuestions}>
-              ← Back to questions
-            </button>
-          </div>
+        {phase === "results" && result && result.ready && (
+          <ResultsScreen result={result} onBack={backToQuestions} />
         )}
       </main>
     </div>
