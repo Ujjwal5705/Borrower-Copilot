@@ -216,3 +216,20 @@ export function pendingAdditionalQuestions(answers) {
 export function isMustSetComplete(answers) {
   return nextMustQuestion(answers) === null;
 }
+
+// --- Progress helpers, used only for the "Question X of Y" UI label ---
+
+export function mustAnsweredCount(answers) {
+  return MUST_QUESTIONS.filter(
+    (q) =>
+      (!q.appliesWhen || q.appliesWhen(answers)) && answers[q.id] !== undefined,
+  ).length;
+}
+
+export function mustTotalCount(answers) {
+  // Recomputed against current answers because some must-questions have
+  // appliesWhen (e.g. incomeRangeHigh only applies to variable-income
+  // borrowers) — so "total" can differ per borrower, which is intentional.
+  return MUST_QUESTIONS.filter((q) => !q.appliesWhen || q.appliesWhen(answers))
+    .length;
+}
