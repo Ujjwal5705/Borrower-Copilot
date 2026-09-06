@@ -282,17 +282,36 @@ export function computeMaxAmount(answers, product, assumedRatePct) {
   const lenderBand = { low: lenderAmountPoint / mult, high: lenderAmountPoint };
   const safeBand = { low: safeAmountPoint / mult, high: safeAmountPoint };
 
-  const recommended = safeAmountPoint <= lenderAmountPoint ? "safe" : "lender";
+  // A lender point of 0 isn't a real, tighter constraint — it means no
+  // formal lender currently recognizes enough income to sanction anything
+  // (common for undocumented informal income). Treating 0 as "the number
+  // to use" would be misleading, so we fall back to the safe number and
+  // say so explicitly, rather than silently recommending an unusable ₹0.
+  const lenderHasNoRealOffer = lenderAmountPoint <= 0;
+  const recommended = lenderHasNoRealOffer
+    ? "safe"
+    : safeAmountPoint <= lenderAmountPoint
+      ? "safe"
+      : "lender";
+
+  let recommendationWhy;
+  if (lenderHasNoRealOffer) {
+    recommendationWhy =
+      "A mainstream lender is unlikely to sanction anything right now given how your income is currently documented — use your safe number as your own planning ceiling, and look at collateral or a co-applicant to access formal credit at all.";
+  } else if (recommended === "safe") {
+    recommendationWhy =
+      "Your safe ceiling is lower than what a lender might approve — borrow to the safe number, not the sanction letter.";
+  } else {
+    recommendationWhy =
+      "Your safe ceiling actually exceeds what a lender is likely to sanction here, so the lender's number is the real constraint.";
+  }
 
   return {
     lenderBand,
     safeBand,
     tenureYearsAssumed: tenure,
     recommendedUse: recommended,
-    recommendationWhy:
-      recommended === "safe"
-        ? "Your safe ceiling is lower than what a lender might approve — borrow to the safe number, not the sanction letter."
-        : "Your safe ceiling actually exceeds what a lender is likely to sanction here, so the lender's number is the real constraint.",
+    recommendationWhy,
     emiCap,
   };
 }
