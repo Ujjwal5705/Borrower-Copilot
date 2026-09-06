@@ -43,6 +43,7 @@ export function computeVerdict(answers, affordability, requestedAmount) {
   //    with no productive/collateral justification — signals the ask itself
   //    is not grounded in what this borrower can access at all.
   if (
+    affordability.lenderBand.high > 0 &&
     amount > affordability.lenderBand.high * 3 &&
     !(Number(answers.collateralValue) > 0)
   ) {
