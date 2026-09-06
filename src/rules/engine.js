@@ -33,11 +33,23 @@ export function runEngine(answers) {
   }
 
   // 1. Product routing — everything else depends on this.
-  const product = routeProduct(answers);
+  let product = routeProduct(answers);
 
-  // 2. Rate band — needed as the "assumed rate" input to size amounts,
-  //    since EMI-to-principal conversion requires a rate. We use the
-  //    center of the band for this sizing step (documented judgement call).
+  // Age-based tenure cap: standard lending practice is that the loan must
+  // be repaid by around retirement age (~60). Without this, `age` was
+  // collected but never actually used by any rule.
+  const age = Number(answers.age);
+  if (!Number.isNaN(age) && age > 0) {
+    const maxTenureByAge = Math.max(60 - age, 1);
+    if (maxTenureByAge < product.defaultTenureYears) {
+      product = {
+        ...product,
+        defaultTenureYears: maxTenureByAge,
+        why: `${product.why} Tenure capped to ${maxTenureByAge} years so the loan is repaid by around age 60.`,
+      };
+    }
+  }
+
   const rateBand = computeRateBand(answers, product);
   const assumedRate = rateBand.center;
 
