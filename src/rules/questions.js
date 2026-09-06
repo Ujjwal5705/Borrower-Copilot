@@ -29,6 +29,7 @@ export const MUST_QUESTIONS = [
     id: "amountWanted",
     label: "How much do you want to borrow? (₹)",
     type: "number",
+    min: 1,
   },
 
   {

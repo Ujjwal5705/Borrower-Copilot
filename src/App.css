@@ -94,6 +94,16 @@ body {
   flex-wrap: wrap;
   align-items: center;
 }
+.input-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.input-error {
+  color: #b3261e;
+  font-size: 12.5px;
+  margin: 0;
+}
 .input-row input {
   flex: 1;
   min-width: 140px;

@@ -22,10 +22,16 @@ const OPTION_LABELS = {
 
 export default function QuestionInput({ question, onAnswer, onSkip, canSkip }) {
   const [draft, setDraft] = useState("");
+  const [error, setError] = useState("");
 
   function submitNumber() {
     const n = Number(draft);
     if (draft.trim() === "" || Number.isNaN(n)) return;
+    if (question.min !== undefined && n < question.min) {
+      setError(`Please enter a number of at least ${question.min}.`);
+      return;
+    }
+    setError("");
     onAnswer(n);
     setDraft("");
   }
@@ -66,19 +72,25 @@ export default function QuestionInput({ question, onAnswer, onSkip, canSkip }) {
       )}
 
       {question.type === "number" && (
-        <div className="input-row">
-          <input
-            type="number"
-            inputMode="numeric"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submitNumber()}
-            placeholder="Enter a number"
-            autoFocus
-          />
-          <button className="primary-btn" onClick={submitNumber}>
-            Next
-          </button>
+        <div className="input-col">
+          <div className="input-row">
+            <input
+              type="number"
+              inputMode="numeric"
+              value={draft}
+              onChange={(e) => {
+                setDraft(e.target.value);
+                setError("");
+              }}
+              onKeyDown={(e) => e.key === "Enter" && submitNumber()}
+              placeholder="Enter a number"
+              autoFocus
+            />
+            <button className="primary-btn" onClick={submitNumber}>
+              Next
+            </button>
+          </div>
+          {error && <p className="input-error">{error}</p>}
         </div>
       )}
 
