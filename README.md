@@ -28,24 +28,30 @@ npm run dev
 
 Open the URL it prints (usually `http://localhost:5173`). That's it — no environment variables, no database, no API keys.
 
-## Project structure
+## Project Structure
+
+```
 src/
-rules/ ← the actual lending logic (no React, no UI). Pure functions, independently testable.
-questions.js — must-question and additional-question bank, adaptive routing (appliesWhen)
-confidence.js — turns "how much was left unanswered" into a band-widening multiplier
-affordability.js — product routing, FOIR caps, lender-vs-safe income, O2 (max amount)
-rate.js — O3 (rate band) + all-in APR calculation
-emi.js — O4 (EMI ceiling, tenure trade-off, stress case)
-verdict.js — O1 (borrow / borrow less / don't borrow)
-engine.js — orchestrates all of the above into one result object
-hooks/
-useAssistant.js — React state: tracks answers, current question, phase (must / additional / results)
-components/
-QuestionFlow.jsx — drives the must-question → additional-question sequence
-QuestionInput.jsx — renders the right input control per question type
-ResultsScreen.jsx — renders O1–O4
-NegotiationCard.jsx — the one-screen printable/holdable summary
-App.tsx — top-level wiring
+├── rules/                    # Core lending logic (no React, no UI)
+│   ├── questions.js          # Must-question and additional-question bank, adaptive routing (appliesWhen)
+│   ├── confidence.js         # Turns "how much was left unanswered" into a band-widening multiplier
+│   ├── affordability.js      # Product routing, FOIR caps, lender-vs-safe income, O2 (max amount)
+│   ├── rate.js               # O3 (rate band) + all-in APR calculation
+│   ├── emi.js                # O4 (EMI ceiling, tenure trade-off, stress case)
+│   ├── verdict.js            # O1 (borrow / borrow less / don't borrow)
+│   └── engine.js             # Orchestrates all of the above into one result object
+│
+├── hooks/
+│   └── useAssistant.js       # React state: tracks answers, current question, phase (must / additional / results)
+│
+├── components/
+│   ├── QuestionFlow.jsx      # Drives the must-question → additional-question sequence
+│   ├── QuestionInput.jsx     # Renders the right input control per question type
+│   ├── ResultsScreen.jsx     # Renders O1–O4
+│   └── NegotiationCard.jsx   # The one-screen printable/holdable summary
+│
+└── App.tsx                   # Top-level wiring
+```
 
 
 The rules engine (`src/rules/`) is deliberately framework-free. It can be run and tested directly from the command line without touching React — see `RULES.md` for every threshold and assumption it uses, with sources.
